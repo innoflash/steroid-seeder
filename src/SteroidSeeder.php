@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Innoflash\SteroidSeeder\FactoryBuilder factory($class, $amount = null)
- * @package Innoflash\SteroidSeeder
  */
 class SteroidSeeder extends Facade
 {

@@ -20,5 +20,4 @@ class Factory extends LaravelFactory
             $this->afterMaking, $this->afterCreating, $this->faker
         );
     }
-
 }

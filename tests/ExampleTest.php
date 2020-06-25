@@ -1,13 +1,12 @@
 <?php
 
-namespace Innoflash\EnvUpdater\Tests;
+namespace Innoflash\SteroidSeeder\Tests;
 
+use Innoflash\SteroidSeeder\SteroidSeederServiceProvider;
 use Orchestra\Testbench\TestCase;
-use Innoflash\EnvUpdater\SteroidSeederServiceProvider;
 
 class ExampleTest extends TestCase
 {
-
     protected function getPackageProviders($app)
     {
         return [SteroidSeederServiceProvider::class];

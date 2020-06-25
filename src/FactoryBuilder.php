@@ -9,7 +9,7 @@ use Illuminate\Support\LazyCollection;
 class FactoryBuilder extends LaravelFactoryBuilder
 {
     /**
-     * @var int $chunkSize
+     * @var int
      */
     protected $chunkSize = 1000;
 
@@ -157,5 +157,4 @@ class FactoryBuilder extends LaravelFactoryBuilder
 
         return $this->getCreateResults(count($records));
     }
-
 }
