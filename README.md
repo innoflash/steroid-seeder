@@ -1,24 +1,61 @@
-# Very short description of the package
+# About Steroid-Seeder
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/innoflash/steroid-seeder.svg?style=flat-square)](https://packagist.org/packages/innoflash/steroid-seeder)
 [![Build Status](https://img.shields.io/travis/innoflash/steroid-seeder/master.svg?style=flat-square)](https://travis-ci.org/innoflash/steroid-seeder)
 [![Quality Score](https://img.shields.io/scrutinizer/g/innoflash/steroid-seeder.svg?style=flat-square)](https://scrutinizer-ci.com/g/innoflash/steroid-seeder)
 [![Total Downloads](https://img.shields.io/packagist/dt/innoflash/steroid-seeder.svg?style=flat-square)](https://packagist.org/packages/innoflash/steroid-seeder)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+This package is built to reduce the time taken when seeding a lot data to the database on development.
+
+<p align="center">
+    <img title="Steroid Seeder" height="250" src="https://raw.githubusercontent.com/innoflash/steroid-seeder/master/images/carbon.png" />
+</p>
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require innoflash/steroid-seeder
+composer require innoflash/steroid-seeder --dev
 ```
 
 ## Usage
+Used the same way we do with default Laravel `factory`
+
+> If you wanna use it in your existing seeding files just replace `factory` with `steroidFactory`
+> 
+> Alternatively you can call the factory from the facade. `SteroidSeeder::factory` 
+
+Default `factory` seeds one model at a time and that elongates the time of execution for huge data-sets.
 
 ``` php
-// Usage description here
+// with default factory (approx 37 seconds on my computer)
+
+factory(TestModel::class, 1000)->create();
+```
+```php
+//with steroidFactory (approx 8 seconds on my machine)
+
+steroidFactory(\App\TestModel::class, 1000)->create();
+```
+
+##### Steroid seeder optimization.
+* By default the `steroidFactory` save 1000 entries at a go, you cant tune this to whatever size that works for you.
+```php
+// took 8.8 seconds to seed 10k entries
+
+steroidFactory(\App\TestModel::class, 100000)
+    ->chunk(1000)
+    ->create();
+```
+* By default the Laravel factory calls some callbacks after creating your models. This is when the model boot and observers are called and its time consuming because the factory iterate over all the created models.
+steroidFactory lets you ignore the callbacks.
+```php
+// took 4.3 seconds to seed 10k entries
+
+steroidFactory(\App\TestModel::class, 100000)
+    ->skipAfterCreatingCallbacks()
+    ->create();
 ```
 
 ### Testing
