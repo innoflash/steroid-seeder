@@ -1,9 +1,9 @@
 # Very short description of the package
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/innoflash/env-updater.svg?style=flat-square)](https://packagist.org/packages/innoflash/env-updater)
-[![Build Status](https://img.shields.io/travis/innoflash/env-updater/master.svg?style=flat-square)](https://travis-ci.org/innoflash/env-updater)
-[![Quality Score](https://img.shields.io/scrutinizer/g/innoflash/env-updater.svg?style=flat-square)](https://scrutinizer-ci.com/g/innoflash/env-updater)
-[![Total Downloads](https://img.shields.io/packagist/dt/innoflash/env-updater.svg?style=flat-square)](https://packagist.org/packages/innoflash/env-updater)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/innoflash/steroid-seeder.svg?style=flat-square)](https://packagist.org/packages/innoflash/steroid-seeder)
+[![Build Status](https://img.shields.io/travis/innoflash/steroid-seeder/master.svg?style=flat-square)](https://travis-ci.org/innoflash/steroid-seeder)
+[![Quality Score](https://img.shields.io/scrutinizer/g/innoflash/steroid-seeder.svg?style=flat-square)](https://scrutinizer-ci.com/g/innoflash/steroid-seeder)
+[![Total Downloads](https://img.shields.io/packagist/dt/innoflash/steroid-seeder.svg?style=flat-square)](https://packagist.org/packages/innoflash/steroid-seeder)
 
 This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
 
@@ -12,7 +12,7 @@ This is where your description should go. Try and limit it to a paragraph or two
 You can install the package via composer:
 
 ```bash
-composer require innoflash/env-updater
+composer require innoflash/steroid-seeder
 ```
 
 ## Usage
