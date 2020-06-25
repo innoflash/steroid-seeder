@@ -2,7 +2,21 @@
 
 namespace Innoflash\SteroidSeeder;
 
-class SteroidSeeder
+use Illuminate\Support\Facades\Facade;
+
+/**
+ * @method static \Innoflash\SteroidSeeder\FactoryBuilder factory($class, $amount = null)
+ * @package Innoflash\SteroidSeeder
+ */
+class SteroidSeeder extends Facade
 {
-    // Build your next great package.
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
+    protected static function getFacadeAccessor()
+    {
+        return 'steroid-seeder';
+    }
 }

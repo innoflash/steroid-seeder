@@ -28,7 +28,7 @@ class SteroidSeederServiceProvider extends ServiceProvider
 
         // Register the main class to use with the facade
         $this->app->singleton('steroid-seeder', function () {
-            return new SteroidSeeder;
+            return new SteroidSeederManager;
         });
     }
 }
