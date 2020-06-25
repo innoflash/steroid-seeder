@@ -4,6 +4,7 @@ namespace Innoflash\SteroidSeeder;
 
 use Illuminate\Database\Eloquent\FactoryBuilder as LaravelFactoryBuilder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\LazyCollection;
 
 class FactoryBuilder extends LaravelFactoryBuilder
 {
@@ -66,29 +67,63 @@ class FactoryBuilder extends LaravelFactoryBuilder
         }
 
         $results->map(function ($model) {
-            if (! $model->usesTimestamps()) {
-                return $model->toArray();
-            }
-
-            $modelAttributes = $model->toArray();
-
-            if (! in_array('created_at', $modelAttributes)) {
-                $model['created_at'] = now()->toDateTimeString();
-            }
-
-            if (! in_array('updated_at', $modelAttributes)) {
-                $model['updated_at'] = now()->toDateTimeString();
-            }
-
-            return $modelAttributes;
+            return $this->mapModel($model);
         })->chunk($this->chunkSize)
             ->each(function ($modelsChunk) {
                 ($this->class)::insert($modelsChunk->toArray());
             });
 
+        return $this->getCreateResults($this->amount);
+    }
+
+    /**
+     * Maps model for database saving.
+     *
+     * @param $model
+     *
+     * @return array
+     */
+    private function mapModel($model)
+    {
+        if (! $model->usesTimestamps()) {
+            return $model->toArray();
+        }
+
+        return $this->withTimestamps($model->toArray());
+    }
+
+    /**
+     * Adds timestamps to a model.
+     *
+     * @param  array  $attributes
+     *
+     * @return array
+     */
+    private function withTimestamps(array $attributes)
+    {
+        if (! in_array('created_at', $attributes)) {
+            $attributes['created_at'] = now()->toDateTimeString();
+        }
+
+        if (! in_array('updated_at', $attributes)) {
+            $attributes['updated_at'] = now()->toDateTimeString();
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Return the last created models.
+     *
+     * @param  int  $amount
+     *
+     * @return mixed
+     */
+    private function getCreateResults(int $amount)
+    {
         $results = ($this->class)::cursor()
             ->reverse()
-            ->take($this->amount)
+            ->take($amount)
             ->reverse();
 
         if ($this->callAfterCreating) {
@@ -97,4 +132,30 @@ class FactoryBuilder extends LaravelFactoryBuilder
 
         return $results;
     }
+
+    /**
+     * Create a collection of models and persist them to the database.
+     *
+     * @param  iterable  $records
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|mixed
+     */
+    public function createMany(iterable $records)
+    {
+        (new LazyCollection($records))
+            ->map(function ($model) {
+                if ($model instanceof Model) {
+                    return $this->mapModel($model);
+                }
+
+                return $this->withTimestamps($model);
+            })
+            ->chunk($this->chunkSize)
+            ->each(function ($modelsChunk) {
+                ($this->class)::insert($modelsChunk->toArray());
+            });
+
+        return $this->getCreateResults(count($records));
+    }
+
 }
