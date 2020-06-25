@@ -1,6 +1,6 @@
 <?php
 
-namespace Innoflash\EnvUpdater;
+namespace Innoflash\SteroidSeeder;
 
 class SteroidSeeder
 {

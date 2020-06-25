@@ -1,11 +1,11 @@
 <?php
 
-namespace Innoflash\EnvUpdater;
+namespace Innoflash\SteroidSeeder;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Innoflash\EnvUpdater\Skeleton\SkeletonClass
+ * @see \Innoflash\SteroidSeeder\Skeleton\SkeletonClass
  */
 class SteroidSeederFacade extends Facade
 {
