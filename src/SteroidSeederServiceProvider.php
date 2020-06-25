@@ -16,6 +16,8 @@ class SteroidSeederServiceProvider extends ServiceProvider
                 __DIR__.'/../config/config.php' => config_path('steroid-seeder.php'),
             ], 'steroid-seeder-config');
         }
+
+        $this->loadFactoriesFrom(config('steroid-seeder.factories-paths'));
     }
 
     /**

@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class FactoryBuilder extends LaravelFactoryBuilder
 {
+    /**
+     * @var int $chunkSize
+     */
     protected $chunkSize = 1000;
 
     /**
