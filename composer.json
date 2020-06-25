@@ -26,13 +26,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Innoflash\\EnvUpdater\\": "src"
+            "Innoflash\\SteroidSeeder\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Innoflash\\EnvUpdater\\Tests\\": "tests"
-        }
+            "Innoflash\\SteroidSeeder\\Tests\\": "tests"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
