@@ -4,8 +4,6 @@ namespace Innoflash\SteroidSeeder;
 
 use Illuminate\Database\Eloquent\FactoryBuilder as LaravelFactoryBuilder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Events\QueryExecuted;
-use Illuminate\Support\Facades\DB;
 
 class FactoryBuilder extends LaravelFactoryBuilder
 {
@@ -13,6 +11,12 @@ class FactoryBuilder extends LaravelFactoryBuilder
      * @var int $chunkSize
      */
     protected $chunkSize = 1000;
+
+    /**
+     * Whether or not to call the callbacks after creating models.
+     * @var bool
+     */
+    protected $callAfterCreating = true;
 
     /**
      * Sets the chunks size to be set when creating entries.
@@ -29,6 +33,18 @@ class FactoryBuilder extends LaravelFactoryBuilder
     }
 
     /**
+     * Sets the seeder to skip calling after creating model callbacks.
+     *
+     * @return $this
+     */
+    public function skipAfterCreatingCallbacks()
+    {
+        $this->callAfterCreating = false;
+
+        return $this;
+    }
+
+    /**
      * Create a collection of models and persist them to the database.
      *
      * @param  array  $attributes
@@ -37,16 +53,14 @@ class FactoryBuilder extends LaravelFactoryBuilder
      */
     public function create(array $attributes = [])
     {
-        DB::listen(function (QueryExecuted $query) {
-            dump($query->sql);
-        });
-
         $results = $this->make($attributes);
 
         if ($results instanceof Model) {
             $this->store(collect([$results]));
 
-            $this->callAfterCreating(collect([$results]));
+            if ($this->callAfterCreating) {
+                $this->callAfterCreating(collect([$results]));
+            }
 
             return $results;
         }
@@ -77,7 +91,9 @@ class FactoryBuilder extends LaravelFactoryBuilder
             ->take($this->amount)
             ->reverse();
 
-        $this->callAfterCreating($results);
+        if ($this->callAfterCreating) {
+            $this->callAfterCreating($results);
+        }
 
         return $results;
     }
