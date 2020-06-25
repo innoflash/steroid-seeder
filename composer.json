@@ -28,15 +28,15 @@
     "autoload": {
         "psr-4": {
             "Innoflash\\SteroidSeeder\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Innoflash\\SteroidSeeder\\Tests\\": "tests"
         },
         "files": [
             "src/helpers.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Innoflash\\SteroidSeeder\\Tests\\": "tests"
+        }
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
