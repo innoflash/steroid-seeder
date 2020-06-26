@@ -15,9 +15,17 @@ class FactoryBuilder extends LaravelFactoryBuilder
 
     /**
      * Whether or not to call the callbacks after creating models.
+     *
      * @var bool
      */
     protected $callAfterCreating = true;
+
+    /**
+     * Whether or not to force calling afterCreate callbacks.
+     *
+     * @var bool
+     */
+    protected $forceAfterCreating = false;
 
     /**
      * Sets the chunks size to be set when creating entries.
@@ -41,6 +49,20 @@ class FactoryBuilder extends LaravelFactoryBuilder
     public function skipAfterCreatingCallbacks()
     {
         $this->callAfterCreating = false;
+
+        return $this;
+    }
+
+    /**
+     * This forces the app to run model created callbacks.
+     *
+     * Please note this increases execution time of the seeding.
+     *
+     * @return $this
+     */
+    public function forceAfterCreatingCallbacks()
+    {
+        $this->forceAfterCreating = true;
 
         return $this;
     }
@@ -126,7 +148,7 @@ class FactoryBuilder extends LaravelFactoryBuilder
             ->take($amount)
             ->reverse();
 
-        if ($this->callAfterCreating) {
+        if ($this->callAfterCreating || $this->forceAfterCreating) {
             $this->callAfterCreating($results);
         }
 
