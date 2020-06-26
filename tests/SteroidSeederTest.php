@@ -5,6 +5,8 @@ namespace Innoflash\SteroidSeeder\Tests;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Innoflash\SteroidSeeder\SteroidSeeder;
 use Innoflash\SteroidSeeder\SteroidSeederServiceProvider;
+use Innoflash\SteroidSeeder\Tests\Models\Comment;
+use Innoflash\SteroidSeeder\Tests\Models\Reaction;
 use Innoflash\SteroidSeeder\Tests\Models\TestModel;
 use Orchestra\Testbench\TestCase;
 
@@ -145,5 +147,141 @@ class SteroidSeederTest extends TestCase
             ->create();
 
         $this->assertLessThan(65, (microtime(true) - $startTime));
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_relationship()
+    {
+        steroidFactory(TestModel::class)
+            ->with(Comment::class)
+            ->create();
+
+        $this->assertCount(1, TestModel::all());
+        $this->assertCount(1, Comment::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_multiple_relationships()
+    {
+        steroidFactory(TestModel::class)
+            ->with(Comment::class)
+            ->with(Reaction::class, 1, [], 'model_id')
+            ->create();
+
+        $this->assertCount(1, TestModel::all());
+        $this->assertCount(1, Comment::all());
+        $this->assertCount(1, Reaction::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_more_than_one_relationship()
+    {
+        steroidFactory(TestModel::class)
+            ->with(Comment::class, 5)
+            ->create();
+
+        $this->assertCount(1, TestModel::all());
+        $this->assertCount(5, Comment::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_more_than_one_entry_on_one_model()
+    {
+        steroidFactory(TestModel::class)
+            ->with(Comment::class, 5)
+            ->with(Reaction::class, 5, [], 'model_id')
+            ->create();
+
+        $this->assertCount(1, TestModel::all());
+        $this->assertCount(5, Comment::all());
+        $this->assertCount(5, Reaction::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_multiple_models_with_relationship()
+    {
+        steroidFactory(TestModel::class, 10)
+            ->with(Comment::class)
+            ->skipAfterCreatingCallbacks()
+            ->create();
+
+        $this->assertCount(10, TestModel::all());
+        $this->assertCount(10, Comment::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_multiple_models_with_different_relationship()
+    {
+        steroidFactory(TestModel::class, 10)
+            ->with(Comment::class)
+            ->with(Reaction::class, 1, [], 'model_id')
+            ->skipAfterCreatingCallbacks()
+            ->create();
+
+        $this->assertCount(10, TestModel::all());
+        $this->assertCount(10, Comment::all());
+        $this->assertCount(10, Reaction::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_multiple_models_with_multiple_relationships()
+    {
+        steroidFactory(TestModel::class, 10)
+            ->with(Comment::class, 5)
+            ->with(Reaction::class, 10,  [], 'model_id')
+            ->skipAfterCreatingCallbacks()
+            ->create();
+
+        $this->assertCount(10, TestModel::all());
+        $this->assertCount(50, Comment::all());
+        $this->assertCount(100, Reaction::all());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_a_model_with_relationship_defaults()
+    {
+        steroidFactory(TestModel::class)
+            ->with(Comment::class, 1, [
+                'user_name' => 'test-name',
+            ])
+            ->skipAfterCreatingCallbacks()
+            ->create();
+
+        $this->assertCount(1, TestModel::all());
+        $this->assertCount(1, Comment::all());
+        $this->assertEquals('test-name', Comment::first()->user_name);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_seed_models_with_relationship_defaults()
+    {
+        steroidFactory(TestModel::class, 2)
+            ->with(Comment::class, 1, [
+                'user_name' => 'test-name',
+            ])
+            ->skipAfterCreatingCallbacks()
+            ->create();
+
+        $this->assertCount(2, TestModel::all());
+        $this->assertCount(2, Comment::all());
+        $this->assertCount('2', Comment::where('user_name', 'test-name')->get());
     }
 }
