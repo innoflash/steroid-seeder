@@ -135,7 +135,7 @@ class SteroidSeederTest extends TestCase
     /**
      * @test
      */
-    public function it_can_seed_100k_entries_in_less_than_a_minute()
+    public function it_can_seed_100k_entries_in_less_than_65_seconds()
     {
         $startTime = microtime(true);
 
@@ -144,6 +144,6 @@ class SteroidSeederTest extends TestCase
             ->skipAfterCreatingCallbacks()
             ->create();
 
-        $this->assertLessThan(60, (microtime(true) - $startTime));
+        $this->assertLessThan(65, (microtime(true) - $startTime));
     }
 }
