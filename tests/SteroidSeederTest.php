@@ -242,7 +242,7 @@ class SteroidSeederTest extends TestCase
     {
         steroidFactory(TestModel::class, 10)
             ->with(Comment::class, 5)
-            ->with(Reaction::class, 10,  [], 'model_id')
+            ->with(Reaction::class, 10, [], 'model_id')
             ->skipAfterCreatingCallbacks()
             ->create();
 

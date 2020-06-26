@@ -19,12 +19,12 @@
     "require": {
         "php": "^7.1",
         "illuminate/database": "^6.0|^7.0",
-        "illuminate/support": "^6.0|^7.0",
-        "nunomaduro/collision": "^4.2"
+        "illuminate/support": "^6.0|^7.0"
     },
     "require-dev": {
         "orchestra/testbench": "^5.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "nunomaduro/collision": "^4.2"
     },
     "autoload": {
         "psr-4": {

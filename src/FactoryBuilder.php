@@ -119,7 +119,6 @@ class FactoryBuilder extends LaravelFactoryBuilder
                 ->each(function ($modelsChunk) {
                     ($this->class)::insert($modelsChunk->toArray());
                 });
-
         }
 
         return $this->getCreateResults($this->amount);
