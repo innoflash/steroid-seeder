@@ -111,15 +111,16 @@ class FactoryBuilder extends LaravelFactoryBuilder
                 $this->callAfterCreating(collect([$results]));
             }
 
-            return $results;
-        }
+            $this->amount = 1;
+        } else {
+            $results->map(function ($model) {
+                return $this->mapModel($model);
+            })->chunk($this->chunkSize)
+                ->each(function ($modelsChunk) {
+                    ($this->class)::insert($modelsChunk->toArray());
+                });
 
-        $results->map(function ($model) {
-            return $this->mapModel($model);
-        })->chunk($this->chunkSize)
-            ->each(function ($modelsChunk) {
-                ($this->class)::insert($modelsChunk->toArray());
-            });
+        }
 
         return $this->getCreateResults($this->amount);
     }
