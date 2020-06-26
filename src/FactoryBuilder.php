@@ -34,6 +34,8 @@ class FactoryBuilder extends LaravelFactoryBuilder
      */
     protected $with = [];
 
+    private $reRunLoop = true;
+
     /**
      * Sets the chunks size to be set when creating entries.
      *
@@ -79,13 +81,14 @@ class FactoryBuilder extends LaravelFactoryBuilder
      *
      * @param  string  $class
      * @param  int  $size
+     * @param  array  $attributes
      * @param  string|null  $foreignKey
      *
      * @return $this
      */
-    public function with(string $class, int $size = 1, string $foreignKey = null)
+    public function with(string $class, int $size = 1, array $attributes = [], string $foreignKey = null)
     {
-        array_merge($this->with, [func_get_args()]);
+        array_push($this->with, [$class, $size, $attributes, $foreignKey]);
 
         return $this;
     }
@@ -175,7 +178,51 @@ class FactoryBuilder extends LaravelFactoryBuilder
             $this->callAfterCreating($results);
         }
 
+        if (count($this->with)) {
+            $this->makeRelationships($results);
+        }
+
         return $results;
+    }
+
+    private function makeRelationships(LazyCollection $records)
+    {
+        $parent = $records->first();
+        $parentForeignKey = $parent->getForeignKey();
+        $parentPrimaryKey = $parent->getKey();
+
+        $this->chunk($this->chunkSize * count($this->with));
+
+        foreach ($this->with as $relationship) {
+            dump('we here');
+            [$class, $size, $attributes, $foreignKey] = $relationship;
+
+            $newRecords = $records->map(function ($record) use (
+                $class,
+                $size,
+                $attributes,
+                $foreignKey,
+                $parentForeignKey,
+                $parentPrimaryKey
+            ) {
+                $attributes = array_merge($attributes, [
+                    $foreignKey ?? $parentForeignKey => $record->getKey(),
+                ]);
+
+                return SteroidSeeder::factory($class, $size)->make($attributes);
+            });
+
+            //temporarily change the current class to the relationship class.
+            $this->class = $class;
+
+            //remove item to prevent getCreateResults from re-running.
+            array_shift($this->with);
+
+            $this->createMany($newRecords->flatten()->toArray());
+
+            //revert the class back to the default class.
+            $this->class = get_class($parent);
+        }
     }
 
     /**
