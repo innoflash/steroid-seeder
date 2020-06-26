@@ -34,6 +34,11 @@ class FactoryBuilder extends LaravelFactoryBuilder
      */
     protected $with = [];
 
+    /**
+     * The temp class used for seeding reationships.
+     *
+     * @var null
+     */
     private $tempClass = null;
 
     /**
@@ -185,6 +190,11 @@ class FactoryBuilder extends LaravelFactoryBuilder
         return $results;
     }
 
+    /**
+     * Creates relationships for the given parent model.
+     *
+     * @param  \Illuminate\Support\LazyCollection  $records
+     */
     private function makeRelationships(LazyCollection $records)
     {
         $parent = $records->first();
@@ -243,6 +253,7 @@ class FactoryBuilder extends LaravelFactoryBuilder
                     : ($this->class)::insert($modelsChunk->toArray());
             });
 
+        //resets the tempClass for the next model to be iterated.
         $this->tempClass = null;
 
         if ($this->amount || $this->with) {

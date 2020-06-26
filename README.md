@@ -57,7 +57,23 @@ steroidFactory(\App\TestModel::class, 100000)
     ->skipAfterCreatingCallbacks()
     ->create();
 ```
+### Seeding relationships
+Steroid seeder can be used to create models with their relationships.
 
+It's a continuation of the above except that the you will need to chain your relationships on the factory. See the example below:
+```php
+    steroidFactory(TestModel::class)
+            ->with(Comment::class)
+            ->with(Reaction::class, 1, [], 'model_id')
+            ->create();
+```
+Here is the params expected in the `with` function.
+|Position|Variable|Type|Required|Default|Description|
+|---------|-------|----|--------|-------|-----------|
+|`1`|`$class`|`string`|`true`|`null`|The class name of the model to be related with the model in create.|
+|`2`|`$size`|`int`|`false`|`1`|The number of models to be seeded with the parent in`create`.|
+|`3`|`$attributes`|`array`|`false`|`[]`| The default attributes to set to the models.|
+|`4`|`$foreignKeyName`|`string`|`false`|parent key| The name of the parent's foreign key column name in the models to be seeded.|
 ### Testing
 
 ``` bash
