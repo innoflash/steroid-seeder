@@ -34,7 +34,7 @@ class FactoryBuilder extends LaravelFactoryBuilder
      */
     protected $with = [];
 
-    private $reRunLoop = true;
+    private $tempClass = null;
 
     /**
      * Sets the chunks size to be set when creating entries.
@@ -189,40 +189,35 @@ class FactoryBuilder extends LaravelFactoryBuilder
     {
         $parent = $records->first();
         $parentForeignKey = $parent->getForeignKey();
-        $parentPrimaryKey = $parent->getKey();
 
         $this->chunk($this->chunkSize * count($this->with));
 
-        foreach ($this->with as $relationship) {
-            dump('we here');
-            [$class, $size, $attributes, $foreignKey] = $relationship;
+        $relationship = $this->with[0];
 
-            $newRecords = $records->map(function ($record) use (
-                $class,
-                $size,
-                $attributes,
-                $foreignKey,
-                $parentForeignKey,
-                $parentPrimaryKey
-            ) {
-                $attributes = array_merge($attributes, [
-                    $foreignKey ?? $parentForeignKey => $record->getKey(),
-                ]);
+        [$class, $size, $attributes, $foreignKey] = $relationship;
 
-                return SteroidSeeder::factory($class, $size)->make($attributes);
-            });
+        $newRecords = (clone $records)->map(function ($record) use (
+            $class,
+            $size,
+            $attributes,
+            $foreignKey,
+            $parentForeignKey
+        ) {
+            $attributes = array_merge($attributes, [
+                $foreignKey ?? $parentForeignKey => $record->getKey(),
+            ]);
 
-            //temporarily change the current class to the relationship class.
-            $this->class = $class;
+            return SteroidSeeder::factory($class, $size)->make($attributes);
+        });
 
-            //remove item to prevent getCreateResults from re-running.
-            array_shift($this->with);
+        //dump($newRecords->flatten()->count());
+        //temporarily change the current class to the relationship class.
+        $this->tempClass = $class;
 
-            $this->createMany($newRecords->flatten()->toArray());
+        //remove item to prevent getCreateResults from re-running.
+        array_shift($this->with);
 
-            //revert the class back to the default class.
-            $this->class = get_class($parent);
-        }
+        $this->createMany($newRecords->flatten()->toArray());
     }
 
     /**
@@ -244,8 +239,15 @@ class FactoryBuilder extends LaravelFactoryBuilder
             })
             ->chunk($this->chunkSize)
             ->each(function ($modelsChunk) {
-                ($this->class)::insert($modelsChunk->toArray());
+                $this->tempClass ? ($this->tempClass)::insert($modelsChunk->toArray())
+                    : ($this->class)::insert($modelsChunk->toArray());
             });
+
+        $this->tempClass = null;
+
+        if ($this->amount || $this->with) {
+            return $this->getCreateResults($this->amount);
+        }
 
         return $this->getCreateResults(count($records));
     }
