@@ -28,6 +28,13 @@ class FactoryBuilder extends LaravelFactoryBuilder
     protected $forceAfterCreating = false;
 
     /**
+     * The extra relationships to build from the given model.
+     *
+     * @var array
+     */
+    protected $with = [];
+
+    /**
      * Sets the chunks size to be set when creating entries.
      *
      * @param  int  $chunkSize
@@ -63,6 +70,22 @@ class FactoryBuilder extends LaravelFactoryBuilder
     public function forceAfterCreatingCallbacks()
     {
         $this->forceAfterCreating = true;
+
+        return $this;
+    }
+
+    /**
+     * Creates the other related models for the given parent model.
+     *
+     * @param  string  $class
+     * @param  int  $size
+     * @param  string|null  $foreignKey
+     *
+     * @return $this
+     */
+    public function with(string $class, int $size = 1, string $foreignKey = null)
+    {
+        array_merge($this->with, [func_get_args()]);
 
         return $this;
     }
