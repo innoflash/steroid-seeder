@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="0" time="0.166323">
+    <testsuite name="Test Suite" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="0" time="0.166323">
+      <testsuite name="Innoflash\SteroidSeeder\Tests\ExampleTest" file="/home/innoflash/Documents/work/faith-gen/laravel-packages/packages/steroid-seeder/tests/ExampleTest.php" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="0" time="0.166323">
+        <testcase name="true_is_true" class="Innoflash\SteroidSeeder\Tests\ExampleTest" classname="Innoflash.SteroidSeeder.Tests.ExampleTest" file="/home/innoflash/Documents/work/faith-gen/laravel-packages/packages/steroid-seeder/tests/ExampleTest.php" line="16" assertions="1" time="0.166323"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
