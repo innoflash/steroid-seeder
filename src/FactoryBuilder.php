@@ -93,6 +93,8 @@ class FactoryBuilder extends LaravelFactoryBuilder
      */
     public function with(string $class, int $size = 1, array $attributes = [], string $foreignKey = null)
     {
+        $this->skipAfterCreatingCallbacks();
+
         array_push($this->with, [$class, $size, $attributes, $foreignKey]);
 
         return $this;
